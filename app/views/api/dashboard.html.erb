@@ -1,0 +1,11 @@
+<h1>Dashboard</h1>
+
+<p> StockDisponiblePorProducto: <%= gen_dashboard[:StockDisponiblePorProducto] %> </p>
+<p> StockDisponiblePorAlmacen: <%= gen_dashboard[:StockDisponiblePorAlmacen] %> </p>
+<p> ListadoOrdenesDeFabricacionEnviadas: <%= gen_dashboard[:ListadoOrdenesDeFabricacionEnviadas] %> </p>
+<%= column_chart Product.group(:sku).count, xtitle: "SKU", ytitle: "Unidades", title: "Boletas generadas"%>
+<%= column_chart Product.group(:sku).count, xtitle: "SKU", ytitle: "Monto ($)", title: "Boletas generadas"%>
+<%= column_chart Product.group(:sku).count, xtitle: "SKU", ytitle: "Unidades", title: "Transacciones finalizadas exitosamente"%>
+<%= column_chart Product.group(:sku).count, xtitle: "SKU", ytitle: "Monto ($)", title: "Transacciones finalizadas exitosamente"%>
+<%= column_chart Product.group(:sku).count, xtitle: "SKU", ytitle: "Unidades", title: "Transacciones no finalizadas exitosamente"%>
+<%= column_chart Product.group(:sku).count, xtitle: "SKU", ytitle: "Monto ($)", title: "Transacciones no finalizadas exitosamente"%>

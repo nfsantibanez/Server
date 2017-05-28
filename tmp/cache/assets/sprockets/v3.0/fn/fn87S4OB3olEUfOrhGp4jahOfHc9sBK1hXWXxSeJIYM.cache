@@ -1,0 +1,58 @@
+I"(function() {
+  this.ShippingTotalManager = (function() {
+    var REGEX_FOR_REMOVING_SPECIAL_CHARS;
+
+    REGEX_FOR_REMOVING_SPECIAL_CHARS = /[^0-9\.]+/g;
+
+    function ShippingTotalManager(input1) {
+      this.input = input1;
+      this.shippingMethods = this.input.shippingMethods;
+      this.shipmentTotal = this.input.shipmentTotal;
+      this.orderTotal = this.input.orderTotal;
+    }
+
+    ShippingTotalManager.prototype.calculateShipmentTotal = function() {
+      this.sum = 0;
+      $.each($(this.shippingMethods).filter(':checked'), (function(_this) {
+        return function(idx, shippingMethod) {
+          return _this.sum += _this.parseCurrencyToFloat($(shippingMethod).data('cost'));
+        };
+      })(this));
+      return this.readjustSummarySection(this.parseCurrencyToFloat(this.orderTotal.html()), this.sum, this.parseCurrencyToFloat(this.shipmentTotal.html()));
+    };
+
+    ShippingTotalManager.prototype.parseCurrencyToFloat = function(input) {
+      return parseFloat(input.replace(REGEX_FOR_REMOVING_SPECIAL_CHARS, ""));
+    };
+
+    ShippingTotalManager.prototype.readjustSummarySection = function(orderTotal, newShipmentTotal, oldShipmentTotal) {
+      var newOrderTotal;
+      newOrderTotal = orderTotal + (newShipmentTotal - oldShipmentTotal);
+      this.shipmentTotal.html(this.shipmentTotal.data('currency') + newShipmentTotal.toFixed(2));
+      return this.orderTotal.html(this.orderTotal.data('currency') + newOrderTotal.toFixed(2));
+    };
+
+    ShippingTotalManager.prototype.bindEvent = function() {
+      return this.shippingMethods.change((function(_this) {
+        return function() {
+          return _this.calculateShipmentTotal();
+        };
+      })(this));
+    };
+
+    return ShippingTotalManager;
+
+  })();
+
+  Spree.ready(function($) {
+    var input;
+    input = {
+      orderTotal: $('#summary-order-total'),
+      shipmentTotal: $("[data-hook='shipping-total']"),
+      shippingMethods: $("input[data-behavior='shipping-method-selector']")
+    };
+    return new ShippingTotalManager(input).bindEvent();
+  });
+
+}).call(this);
+:ET
